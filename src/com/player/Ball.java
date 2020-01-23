@@ -40,22 +40,19 @@ public final class Ball extends Circle {
     }
 
     public void update(Player player1, Player player2) {
-        if (!isColliding(player1, player2)) {
-            setCenterX(getCenterX() + speedX);
-            setCenterY(getCenterY() + speedY);
-            speedX += ((speedX > 0) ? 1 : -1) * 0.01;
-            speedY += ((speedY > 0) ? 1 : -1) * 0.01;
-        }
+        isColliding(player1, player2);
+        setCenterX(getCenterX() + speedX);
+        setCenterY(getCenterY() + speedY);
+        speedX += ((speedX > 0) ? 1 : -1) * 0.01;
+        speedY += ((speedY > 0) ? 1 : -1) * 0.01;
     }
 
-    private boolean isColliding(Player player1, Player player2) {
+    private void isColliding(Player player1, Player player2) {
         if ((getCenterY() - getRadius() <= 0) || (getCenterY() + getRadius() >= SCENE_HEIGHT)) {
             speedY *= -1;
-            return true;
         }
         if (collision(player1) || collision(player2)) {
             speedX *= -1;
-            return true;
         }
         if ((getCenterX() - getRadius() <= 0) || (this.getCenterX() + this.getRadius() >= SCENE_WIDTH)) {
             if (getCenterX() - getRadius() <= 0) {
@@ -64,9 +61,7 @@ public final class Ball extends Circle {
                 leftPlayerScore.setValue(leftPlayerScore.getValue() + 1);
             }
             resetBall();
-            return true;
         }
-        return false;
     }
 
     private boolean collision(Player player) {
