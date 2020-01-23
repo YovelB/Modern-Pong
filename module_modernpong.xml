@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_modernpong" default="compile.module.modernpong">
+    <dirname property="module.modernpong.basedir" file="${ant.file.module_modernpong}"/>
+
+    <property name="module.jdk.home.modernpong" value="${jdk.home.13}"/>
+    <property name="module.jdk.bin.modernpong" value="${jdk.bin.13}"/>
+    <property name="module.jdk.classpath.modernpong" value="jdk.classpath.13"/>
+
+    <property name="compiler.args.modernpong" value="-encoding UTF-8 -source 12 -target 12 ${compiler.args}"/>
+
+    <property name="modernpong.output.dir" value="${module.modernpong.basedir}/out/production/ModernPong"/>
+    <property name="modernpong.testoutput.dir" value="${module.modernpong.basedir}/out/test/ModernPong"/>
+
+    <path id="modernpong.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="modernpong.module.production.classpath">
+        <path refid="${module.jdk.classpath.modernpong}"/>
+        <path refid="library.lib.classpath"/>
+    </path>
+
+    <path id="modernpong.runtime.production.module.classpath">
+        <pathelement location="${modernpong.output.dir}"/>
+        <path refid="library.lib.classpath"/>
+    </path>
+
+    <path id="modernpong.module.classpath">
+        <path refid="${module.jdk.classpath.modernpong}"/>
+        <pathelement location="${modernpong.output.dir}"/>
+        <path refid="library.lib.classpath"/>
+    </path>
+
+    <path id="modernpong.runtime.module.classpath">
+        <pathelement location="${modernpong.testoutput.dir}"/>
+        <pathelement location="${modernpong.output.dir}"/>
+        <path refid="library.lib.classpath"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.modernpong">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.modernpong">
+        <patternset refid="excluded.from.module.modernpong"/>
+    </patternset>
+
+    <path id="modernpong.module.sourcepath">
+        <dirset dir="${module.modernpong.basedir}">
+            <include name="src"/>
+        </dirset>
+    </path>
+
+
+    <target name="compile.module.modernpong"
+            depends="compile.module.modernpong.production,compile.module.modernpong.tests"
+            description="Compile module ModernPong"/>
+
+    <target name="compile.module.modernpong.production" depends="register.custom.compilers"
+            description="Compile module ModernPong; production classes">
+        <mkdir dir="${modernpong.output.dir}"/>
+        <javac2 destdir="${modernpong.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+                memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.modernpong}/javac">
+            <compilerarg line="${compiler.args.modernpong}"/>
+            <bootclasspath refid="modernpong.module.bootclasspath"/>
+            <classpath refid="modernpong.module.production.classpath"/>
+            <src refid="modernpong.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.modernpong"/>
+        </javac2>
+
+        <copy todir="${modernpong.output.dir}">
+            <fileset dir="${module.modernpong.basedir}/src">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile.module.modernpong.tests"
+            depends="register.custom.compilers,compile.module.modernpong.production"
+            description="compile module ModernPong; test classes" unless="skip.tests"/>
+
+    <target name="clean.module.modernpong" description="cleanup module">
+        <delete dir="${modernpong.output.dir}"/>
+        <delete dir="${modernpong.testoutput.dir}"/>
+    </target>
+</project>
